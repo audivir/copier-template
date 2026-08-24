@@ -1,0 +1,65 @@
+{%- if project_type in ("pyo3", "rust") -%}
+# rust-generated files
+Cargo.lock
+**/*.rs.bk
+/target/
+
+{% endif -%}
+{%- if project_type in ("python", "pyo3") -%}
+# python-generated files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+*.egg-info
+build/
+dist/
+wheels/
+
+# build artifacts
+.pdm-build/
+.pdm-python
+
+# virtual environments
+.venv/
+venv/
+
+# test artifacts
+.benchmarks/
+.coverage*
+.pytest_cache/
+
+# lint artifacts
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+.python-version
+
+{% endif -%}
+{%- if project_type == "go" -%}
+# go-generated files
+*.exe
+*.exe~
+*.dll
+*.dylib
+*.test
+*.out
+/bin/
+
+{% endif -%}
+# editors
+.idea/
+.vscode/
+
+# os
+.DS_Store
+Thumbs.db
+
+# environment variables
+.env
+env/
+
+# custom exclusions

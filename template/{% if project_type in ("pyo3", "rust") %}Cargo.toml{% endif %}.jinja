@@ -1,0 +1,22 @@
+[package]
+name = "{{ project_name }}"
+version = "0.1.0"
+edition = "2024"
+description = "{{ description }}"
+{%- if project_type == "pyo3" %}
+
+[lib]
+name = "_{{ project_slug }}"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "...", features = ["extension-module"] }
+{%- else %}
+
+[dependencies]
+{%- endif %}
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = "fat"

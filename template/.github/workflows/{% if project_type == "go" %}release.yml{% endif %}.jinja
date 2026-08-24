@@ -1,0 +1,26 @@
+{% raw -%}
+name: Release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "{% endraw %}{{ go_version }}{% raw %}"
+      - name: Check that the release tag is a valid Go module version
+        if: github.event_name == 'release'
+        run: |
+          if ! [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]]; then
+            echo "::error::Release tag $GITHUB_REF_NAME is not a valid semver Go module version (vX.Y.Z)"
+            exit 1
+          fi
+      - run: go build ./...
+      - run: go vet ./...
+      # Go modules are published by the tag itself: the module proxy fetches
+      # directly from the tagged commit, so there is no build/publish step.
+{%- endraw %}

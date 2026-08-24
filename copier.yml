@@ -1,0 +1,46 @@
+project_name:
+  type: str
+  help: Project name (used as the PyPI/crate name)
+project_slug:
+  type: str
+  help: Python import package name (irrelevant for pure Rust/Go/shell projects)
+  default: "{{ project_name.lower().replace('-', '_').replace(' ', '_') }}"
+description:
+  type: str
+  help: Short one-line project description
+  default: ""
+github_org:
+  type: str
+  help: GitHub organization or user the repo lives under
+  default: audivir
+author_name:
+  type: str
+  help: Author name (used in `pyproject.toml` `authors`)
+  when: "{{ project_type in ('python', 'pyo3') }}"
+author_email:
+  type: str
+  help: Author email (used in `pyproject.toml` `authors`)
+  when: "{{ project_type in ('python', 'pyo3') }}"
+project_type:
+  type: str
+  help: What kind of project is this?
+  choices:
+    Pure Python (pdm-backend): python
+    Python with a PyO3 Rust extension (maturin): pyo3
+    Pure Rust (no Python): rust
+    Pure Go (no Python/Rust): go
+    Shell scripts (no package manifest): shell
+    This template repo bootstrapping itself (like shell, no update-copier-template workflow): bootstrap
+  default: python
+go_module_path:
+  type: str
+  help: Go module path (as used in `go.mod` and import statements)
+  default: "github.com/{{ github_org }}/{{ project_name }}"
+  when: "{{ project_type == 'go' }}"
+go_version:
+  type: str
+  help: Pinned Go version (the `go` directive in `go.mod`)
+  default: "1.26"
+  when: "{{ project_type == 'go' }}"
+_subdirectory: template
+_templates_suffix: ".jinja"

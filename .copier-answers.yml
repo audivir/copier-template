@@ -1,0 +1,8 @@
+# Changes here will be overwritten by Copier
+_commit: 15d1d54
+_src_path: .
+description: Copier template for scaffolding Python/PyO3/Rust/Go/shell projects
+github_org: audivir
+project_name: copier-template
+project_slug: copier_template
+project_type: bootstrap

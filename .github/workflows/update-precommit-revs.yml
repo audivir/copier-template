@@ -1,0 +1,24 @@
+name: Update pre-commit revs
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Monday 06:00 UTC
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+      - run: uv tool install prek
+      # add prek to path
+      - run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: python3 scripts/update_precommit_revs.py
+      - uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: Bump pinned pre-commit revs
+          title: Bump pinned pre-commit revs
+          branch: update-precommit-revs
+          delete-branch: true
