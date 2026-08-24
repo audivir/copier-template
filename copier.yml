@@ -30,7 +30,7 @@ project_type:
     Pure Rust (no Python): rust
     Pure Go (no Python/Rust): go
     Shell scripts (no package manifest): shell
-    This template repo bootstrapping itself (like shell, no update-copier-template workflow): bootstrap
+    This template repo bootstrapping itself: bootstrap
   default: python
 go_module_path:
   type: str
@@ -42,5 +42,10 @@ go_version:
   help: Pinned Go version (the `go` directive in `go.mod`)
   default: "1.26"
   when: "{{ project_type == 'go' }}"
+publishable:
+  type: bool
+  help: Does this project build a publishable binary (Go, Rust) or should be published to PyPI (Python, PyO3)?
+  default: true
+  when: "{{ project_type != 'bootstrap' }}"
 _subdirectory: template
 _templates_suffix: ".jinja"
