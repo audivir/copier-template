@@ -1,5 +1,5 @@
 {%- set source_dir = "scripts" if project_type == "bootstrap" else project_slug -%}
-{%- if project_type != "bootstrap" %}
+{%- if project_type != "bootstrap" -%}
 [build-system]
 {%- if project_type == "pyo3" %}
 requires = ["maturin>=1.0,<2.0"]
@@ -9,7 +9,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 {%- endif %}
 
-{%- endif %}
+{% endif -%}
 [project]
 name = "{{ project_name }}"
 {%- if project_type == "bootstrap" %}
