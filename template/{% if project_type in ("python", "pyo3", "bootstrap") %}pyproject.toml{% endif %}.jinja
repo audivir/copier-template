@@ -1,3 +1,5 @@
+{%- set source_dir = "scripts" if project_type == "bootstrap" else project_slug -%}
+{%- if project_type != "bootstrap" %}
 [build-system]
 {%- if project_type == "pyo3" %}
 requires = ["maturin>=1.0,<2.0"]
@@ -7,15 +9,20 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 {%- endif %}
 
+{%- endif %}
 [project]
 name = "{{ project_name }}"
+{%- if project_type == "bootstrap" %}
+version = "0.0.0"
+{%- else %}
 dynamic = ["version"]
+{%- endif %}
 description = "{{ description }}"
 authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
 license = "MIT"
-keywords = ["..."]
+keywords = []
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
@@ -27,14 +34,10 @@ classifiers = [
 {%- if project_type == "pyo3" %}
   "Programming Language :: Rust",
 {%- endif %}
-  "...",
 ]
-dependencies = [
-  # "...",
-]
+dependencies = []
 
-# [project.optional-dependencies]
-# example = ["..."]
+[project.optional-dependencies]
 
 [project.urls]
 Homepage = "https://github.com/{{ github_org }}/{{ project_name }}"
@@ -48,7 +51,7 @@ dev = ["mypy", "pytest", "coverage", "prek", "ruff"]
 [tool.maturin]
 python-source = "python"
 module-name = "{{ project_slug }}._{{ project_slug }}"
-{%- else %}
+{%- elif project_type != "bootstrap" %}
 
 [tool.pdm.version]
 source = "file"
@@ -57,6 +60,9 @@ path = "{{ project_slug }}/__init__.py"
 
 [tool.mypy]
 strict = true
+{%- if project_type == "bootstrap" %}
+mypy_path = "scripts"
+{%- endif %}
 disable_error_code = "import-untyped"
 enable_error_code = """type-arg,no-untyped-def,redundant-cast,redundant-self,comparison-overlap,
                     no-untyped-call,no-any-return,no-any-unimported,unreachable,deprecated,redundant-expr,
@@ -71,7 +77,7 @@ local_partial_types = true
 exclude = ["build", "docs"]
 
 [tool.coverage.run]
-source = ["tests", "{{ project_slug }}"]
+source = ["tests", "{{ source_dir }}"]
 command_line = "-m pytest"
 branch = true
 patch = ["subprocess"]
@@ -90,6 +96,9 @@ show_missing = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"
+{%- if project_type == "bootstrap" %}
+pythonpath = ["scripts"]
+{%- endif %}
 addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
 xfail_strict = true
 log_cli_level = "INFO"
@@ -105,7 +114,7 @@ ignore_names = ["_*", "unused_*"]
 {%- if project_type == "pyo3" %}
 paths = [".whitelist", "tests", "python"]
 {%- else %}
-paths = [".whitelist", "tests", "{{ project_slug }}"]
+paths = [".whitelist", "tests", "{{ source_dir }}"]
 {%- endif %}
 make_whitelist = true
 sort_by_size = true

@@ -1,23 +1,15 @@
 #!/usr/bin/env python3
-"""Bump pinned `rev:` values in template/.pre-commit-config.yaml.jinja via `prek update`.
-
-The file mixes Jinja conditionals into otherwise-plain YAML, so it cannot be fed to
-`prek update` directly. Instead of trying to understand the Jinja control flow (fragile:
-breaks whenever the conditionals change shape), this script only extracts the parts of
-the file that are always plain YAML regardless of which branch they are under: each
-`- repo: <url>` block together with its `rev:` and hook `id:` lines. Those are assembled
-into a throwaway `.pre-commit-config.yaml`, `prek update` runs against that, and only the
-resulting `rev:` bumps are written back onto the matching `- repo:` blocks in the
-original template file. Everything else in the template (Jinja tags, comments, local
-hooks, ordering) is left untouched.
-"""
+"""Bumps pinned `rev:` values in `template/.pre-commit-config.yaml.jinja` via `prek update`."""
 
 from __future__ import annotations
 
+import logging
 import re
 import subprocess
 import tempfile
 from pathlib import Path
+
+logger = logging.getLogger()
 
 TEMPLATE = Path("template/.pre-commit-config.yaml.jinja")
 
@@ -27,7 +19,7 @@ HOOK_ID_RE = re.compile(r"^\s*-\s*id:\s*(\S+)\s*$")
 
 
 def extract_repo_blocks(lines: list[str]) -> dict[str, list[str]]:
-    """Map repo URL -> hook ids, skipping local blocks."""
+    """Maps repo URL -> hook ids, skipping local blocks."""
     blocks: dict[str, list[str]] = {}
     current_repo: str | None = None
     for line in lines:
@@ -48,17 +40,18 @@ def extract_repo_blocks(lines: list[str]) -> dict[str, list[str]]:
 
 
 def build_synthetic_config(blocks: dict[str, list[str]], revs: dict[str, str]) -> str:
+    """Mocks a `.pre-commit-config.yaml` with the `blocks`."""
     out = ["repos:"]
     for repo, hook_ids in blocks.items():
         out.append(f"  - repo: {repo}")
         out.append(f"    rev: {revs[repo]}")
         out.append("    hooks:")
-        for hook_id in hook_ids:
-            out.append(f"      - id: {hook_id}")
+        out.extend(f"      - id: {hook_id}" for hook_id in hook_ids)
     return "\n".join(out) + "\n"
 
 
 def extract_first_revs(lines: list[str], repos: set[str]) -> dict[str, str]:
+    """Extracts the current revisions from the template lines."""
     revs: dict[str, str] = {}
     pending_repo: str | None = None
     for line in lines:
@@ -76,6 +69,7 @@ def extract_first_revs(lines: list[str], repos: set[str]) -> dict[str, str]:
 
 
 def apply_new_revs(lines: list[str], new_revs: dict[str, str]) -> list[str]:
+    """Applies the updated revisions to the template lines."""
     out = list(lines)
     pending_repo: str | None = None
     for i, line in enumerate(out):
@@ -95,27 +89,28 @@ def apply_new_revs(lines: list[str], new_revs: dict[str, str]) -> list[str]:
 
 
 def main() -> None:
+    """Runs `prek update` and updates the Jinja template."""
     lines = TEMPLATE.read_text().splitlines(keepends=True)
     blocks = extract_repo_blocks(lines)
     old_revs = extract_first_revs(lines, set(blocks))
 
     with tempfile.TemporaryDirectory() as tmp:
         # prek requires its config to live inside a git repo.
-        subprocess.run(["git", "init", "-q"], cwd=tmp, check=True)
+        subprocess.run(["git", "init", "-q"], cwd=tmp, check=True)  # noqa: S607
         synthetic = Path(tmp) / ".pre-commit-config.yaml"
         synthetic.write_text(build_synthetic_config(blocks, old_revs))
-        subprocess.run(["prek", "update"], cwd=tmp, check=True)
+        subprocess.run(["prek", "update"], cwd=tmp, check=True)  # noqa: S607
         new_lines = synthetic.read_text().splitlines(keepends=True)
 
     new_revs = extract_first_revs(new_lines, set(blocks))
     changed = {repo: rev for repo, rev in new_revs.items() if rev != old_revs[repo]}
 
     if not changed:
-        print("All pinned pre-commit revs are already up to date.")
+        logger.info("All pinned pre-commit revs are already up to date.")
         return
 
     for repo, rev in changed.items():
-        print(f"{repo}: {old_revs[repo]} -> {rev}")
+        logger.info("%s: %s -> %s", repo, old_revs[repo], rev)
 
     TEMPLATE.write_text("".join(apply_new_revs(lines, changed)))
 

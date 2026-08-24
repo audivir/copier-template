@@ -1,3 +1,35 @@
+# python-generated files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+*.egg-info
+build/
+dist/
+wheels/
+
+# build artifacts
+.pdm-build/
+.pdm-python
+
+# virtual environments
+.venv/
+venv/
+
+# test artifacts
+.benchmarks/
+.coverage*
+.pytest_cache/
+
+# lint artifacts
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+.python-version
+
 # editors
 .idea/
 .vscode/

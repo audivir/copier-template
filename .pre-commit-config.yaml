@@ -78,3 +78,18 @@ repos:
     hooks:
       - id: shellcheck
         files: ^(\.zshrc|\.bashrc|\.env|.*\.sh)$
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      - id: ruff-format
+      - id: ruff-check
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        require_serial: true
+        pass_filenames: false
+        args: [scripts, tests]

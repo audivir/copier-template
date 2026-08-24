@@ -1,6 +1,8 @@
 # Changes here will be overwritten by Copier
-_commit: 15d1d54
+_commit:
 _src_path: .
+author_email: pypi@audivir.de
+author_name: Tim Hörmann
 description: Copier template for scaffolding Python/PyO3/Rust/Go/shell projects
 github_org: audivir
 project_name: copier-template

@@ -78,7 +78,7 @@ repos:
     hooks:
       - id: shellcheck
         files: ^(\.zshrc|\.bashrc|\.env|.*\.sh)$
-{%- if project_type in ("python", "pyo3") %}
+{%- if project_type in ("python", "pyo3", "bootstrap") %}
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.4
     hooks:
@@ -93,10 +93,10 @@ repos:
       - id: golangci-lint-fmt
       - id: golangci-lint-full
 {%- endif %}
-{%- if project_type in ("python", "pyo3", "rust") %}
+{%- if project_type in ("python", "pyo3", "rust", "bootstrap") %}
   - repo: local
     hooks:
-{%- if project_type in ("python", "pyo3") %}
+{%- if project_type in ("python", "pyo3", "bootstrap") %}
       - id: mypy
         name: mypy
         entry: mypy
@@ -106,6 +106,8 @@ repos:
         pass_filenames: false
 {%- if project_type == "pyo3" %}
         args: [python, tests]
+{%- elif project_type == "bootstrap" %}
+        args: [scripts, tests]
 {%- else %}
         args: [{{ project_slug }}, tests]
 {%- endif %}

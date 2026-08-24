@@ -13,9 +13,11 @@ jobs:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.0.1
       - run: uv tool install prek
-      # add prek to path
+      - run: uv tool install copier
+      # add prek & copier to path
       - run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: python3 scripts/update_precommit_revs.py
+      - run: python3 scripts/bootstrap_updates.py --overwrite
       - uses: peter-evans/create-pull-request@v8
         with:
           commit-message: Bump pinned pre-commit revs

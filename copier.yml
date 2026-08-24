@@ -16,11 +16,11 @@ github_org:
 author_name:
   type: str
   help: Author name (used in `pyproject.toml` `authors`)
-  when: "{{ project_type in ('python', 'pyo3') }}"
+  when: "{{ project_type in ('python', 'pyo3', 'bootstrap') }}"
 author_email:
   type: str
   help: Author email (used in `pyproject.toml` `authors`)
-  when: "{{ project_type in ('python', 'pyo3') }}"
+  when: "{{ project_type in ('python', 'pyo3', 'bootstrap') }}"
 project_type:
   type: str
   help: What kind of project is this?
