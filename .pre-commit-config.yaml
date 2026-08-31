@@ -79,7 +79,7 @@ repos:
       - id: shellcheck
         files: ^(\.zshrc|\.bashrc|\.env|.*\.sh)$
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.5
     hooks:
       - id: ruff-format
       - id: ruff-check

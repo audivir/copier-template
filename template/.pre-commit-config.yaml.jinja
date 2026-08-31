@@ -80,7 +80,7 @@ repos:
         files: ^(\.zshrc|\.bashrc|\.env|.*\.sh)$
 {%- if project_type in ("python", "pyo3", "bootstrap") %}
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.5
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -88,7 +88,7 @@ repos:
 {%- if project_type == "go" %}
   # go formatting and linting
   - repo: https://github.com/golangci/golangci-lint
-    rev: v2.13.1
+    rev: v2.13.2
     hooks:
       - id: golangci-lint-fmt
       - id: golangci-lint-full
