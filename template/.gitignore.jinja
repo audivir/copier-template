@@ -1,8 +1,5 @@
 {%- if project_type in ("pyo3", "rust") -%}
 # rust-generated files
-{% if project_type == "pyo3" -%}
-Cargo.lock
-{% endif -%}
 **/*.rs.bk
 /target/
 
