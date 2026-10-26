@@ -65,7 +65,7 @@ repos:
         #  - id: clang-format
   # toml formatting
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v1.8.4
+    rev: v1.9.6
     hooks:
       - id: tombi-format
         exclude: (^|/)Cargo\.lock$
@@ -81,7 +81,7 @@ repos:
         files: ^(\.zshrc|\.bashrc|\.env|.*\.sh)$
 {%- if project_type in ("python", "pyo3", "bootstrap") %}
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.17.2
     hooks:
       - id: ruff-format
       - id: ruff-check
