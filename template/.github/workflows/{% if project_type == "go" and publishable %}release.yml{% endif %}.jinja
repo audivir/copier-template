@@ -56,6 +56,9 @@ jobs:
           name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
           path: ${{ env.BIN_NAME }}-*
           retention-days: 1
+{%- endraw %}
+{%- if musl_build == "static" %}
+{%- raw %}
   build-musl:
     # fully static, so the binaries also run on musl systems such as Alpine
     needs: check-version
@@ -85,6 +88,9 @@ jobs:
           name: binary-linux-musl-${{ matrix.goarch }}
           path: ${{ env.BIN_NAME }}-*
           retention-days: 1
+{%- endraw %}
+{%- endif %}
+{%- raw %}
   release:
     name: Create GitHub Release
     needs: [build, build-musl]

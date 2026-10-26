@@ -47,5 +47,13 @@ publishable:
   help: Does this project build a publishable binary (Go, Rust) or should be published to PyPI (Python, PyO3)?
   default: true
   when: "{{ project_type != 'bootstrap' }}"
+musl_build:
+  type: str
+  help: How are the musl binaries built? A project that needs cgo writes its own `build-musl` job
+  choices:
+    Static pure Go build with CGO_ENABLED=0: static
+    Custom `build-musl` job in `release.yml` (for cgo): custom
+  default: static
+  when: "{{ project_type == 'go' and publishable }}"
 _subdirectory: template
 _templates_suffix: ".jinja"
