@@ -55,5 +55,9 @@ musl_build:
     Custom `build-musl` job in `release.yml` (for cgo): custom
   default: static
   when: "{{ project_type == 'go' and publishable }}"
+remove_tabs_extra_exclude:
+  type: str
+  help: Extra regex alternatives the `remove-tabs` hook skips, appended with `|` to the template pattern (e.g. `^tests/assets/`)
+  default: ""
 _subdirectory: template
 _templates_suffix: ".jinja"
