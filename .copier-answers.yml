@@ -8,3 +8,4 @@ github_org: audivir
 project_name: copier-template
 project_slug: copier_template
 project_type: bootstrap
+remove_tabs_extra_exclude: ''
