@@ -114,6 +114,13 @@ repos:
 {%- endif %}
 {%- endif %}
 {%- if project_type in ("pyo3", "rust") %}
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --all
+        language: system
+        types: [rust]
+        require_serial: true
+        pass_filenames: false
       - id: clippy
         name: clippy
         entry: cargo clippy --all-targets --all-features -- -D warnings
